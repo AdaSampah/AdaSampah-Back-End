@@ -1,6 +1,8 @@
 import getAllReports from "../handlers/reports/getAllReports.js";
 import getReportById from "../handlers/reports/getReportById.js";
 import postReport from "../handlers/reports/postReport.js";
+import editReportDescription from "../handlers/reports/editReportDescription.js";
+import updateReportStatus from "../handlers/reports/updateReportStatus.js";
 
 const reportRoutes = [
   {
@@ -32,6 +34,16 @@ const reportRoutes = [
       },
     },
     handler: postReport,
+  },
+  {
+    method: "PUT",
+    path: "/reports/{reportId}",
+    handler: editReportDescription,
+  },
+  {
+    method: "PUT",
+    path: "/reports/{reportId}/status",
+    handler: updateReportStatus,
   },
 ];
 
