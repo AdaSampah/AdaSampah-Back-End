@@ -6,6 +6,7 @@ import updateReportStatus from "../handlers/reports/updateReportStatus.js";
 import deleteReportById from "../handlers/reports/deleteReportById.js";
 import toggleSaveById from "../handlers/reports/toggleSaveById.js";
 import getSaveById from "../handlers/reports/getSaveById.js";
+import getReportByUserId from "../handlers/reports/getReportByUserId.js";
 
 const reportRoutes = [
   {
@@ -62,6 +63,11 @@ const reportRoutes = [
     method: "GET",
     path: "/reports/{reportId}/saved",
     handler: getSaveById,
+  },
+  {
+    method: "GET",
+    path: "/reports/{userId}",
+    handler: getReportByUserId,
   }
 ];
 
