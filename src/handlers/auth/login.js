@@ -7,23 +7,44 @@ const loginUser = async (request, h) => {
     const { username, email, password } = request.payload;
 
     if (!username && !email) {
-      return h.response({ status: "fail", message: "Username or email is required" }).code(400);
+      return h
+        .response({ status: "fail", message: "Username or email is required" })
+        .code(400);
     }
 
     const query = username ? { username } : { email };
     const user = await User.findOne(query);
 
     if (!user) {
-      return h.response({ status: "fail", message: "Invalid username/email or password" }).code(401);
+      return h
+        .response({
+          status: "fail",
+          message: "Invalid username/email or password",
+        })
+        .code(401);
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return h.response({ status: "fail", message: "Invalid username/email or password" }).code(401);
+      return h
+        .response({
+          status: "fail",
+          message: "Invalid username/email or password",
+        })
+        .code(401);
     }
 
     // Buat token JWT
-    const token = jwt.sign({ userId: user._id, username: user.username, email: user.email, role: user.role }, process.env.JWT_SECRET, { expiresIn: "3d" });
+    const token = jwt.sign(
+      {
+        userId: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "3d" }
+    );
 
     // Kirim token sebagai cookie
     const response = h.response({
@@ -42,9 +63,8 @@ const loginUser = async (request, h) => {
     response.state("token", token, {
       path: "/",
       isHttpOnly: true,
-      isSecure: true,
+      isSecure: process.env.NODE_ENV === "production", // true hanya di production
       sameSite: "Strict",
-      path: "/",
       ttl: 3 * 24 * 60 * 60 * 1000, // 3 hari (ms)
     });
 

@@ -11,6 +11,7 @@ const statusSchema = new Schema(
 
 const reportSchema = new Schema(
   {
+    userId: { type: String, required: true },
     photoUrl: { type: String, required: true },
     description: { type: String, required: true },
     lat: { type: Number, required: true },

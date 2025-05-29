@@ -4,6 +4,8 @@ import cloudinary from "../../config/cloudinary.js";
 const postReport = async (request, h) => {
   try {
     // ambil data dari request payload
+    const userId = request.authenticatedUser?.userId;
+
     const {
       description,
       lat,
@@ -40,6 +42,7 @@ const postReport = async (request, h) => {
     }
 
     const report = new Report({
+      userId,
       description,
       photoUrl,
       lat: Number(lat),

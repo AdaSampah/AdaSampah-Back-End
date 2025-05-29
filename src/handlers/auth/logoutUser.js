@@ -1,4 +1,4 @@
-import { addToBlacklist } from "../../middleware/auth.js";
+import { addToBlacklist, isTokenBlacklisted } from "../../middleware/auth.js";
 
 const logoutUser = async (request, h) => {
   try {
@@ -15,8 +15,18 @@ const logoutUser = async (request, h) => {
         .code(400); // Changed to 400 instead of 401
     }
 
+    // Cek apakah token sudah di-blacklist
+    if (await isTokenBlacklisted(token)) {
+      return h
+        .response({
+          status: "fail",
+          message: "No active session",
+        })
+        .code(400);
+    }
+
     // Tambahkan token ke blacklist
-    addToBlacklist(token);
+    await addToBlacklist(token);
 
     // Hapus cookie dengan setting yang sama seperti saat login
     const response = h.response({
@@ -28,7 +38,7 @@ const logoutUser = async (request, h) => {
     response.unstate("token", {
       path: "/",
       isHttpOnly: true,
-      isSecure: true, // Only secure in production
+      isSecure: process.env.NODE_ENV === "production", // true hanya di production
       sameSite: "Strict",
     });
 

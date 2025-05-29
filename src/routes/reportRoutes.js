@@ -3,6 +3,7 @@ import getReportById from "../handlers/reports/getReportById.js";
 import postReport from "../handlers/reports/postReport.js";
 import editReportDescription from "../handlers/reports/editReportDescription.js";
 import updateReportStatus from "../handlers/reports/updateReportStatus.js";
+import authenticate from "../middleware/auth.js";
 
 const reportRoutes = [
   {
@@ -26,6 +27,10 @@ const reportRoutes = [
     method: "POST",
     path: "/reports",
     options: {
+      pre: [{ method: authenticate }],
+      plugins: {
+        "hapi-auth-cookie": false,
+      },
       payload: {
         output: "stream",
         parse: true,

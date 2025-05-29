@@ -1,12 +1,9 @@
-import mongoClient from "../../config/mongoose.js";
-import { ObjectId } from "mongodb";
+import Report from "../../models/reportSchema.js";
 
 const getReportById = async (request, h) => {
   try {
     const { reportId } = request.params;
-    const db = mongoClient.db("Capstone");
-    const collection = db.collection("Reports");
-    const report = await collection.findOne({ _id: new ObjectId(reportId) });
+    const report = await Report.findById(reportId);
 
     if (!report) {
       return h

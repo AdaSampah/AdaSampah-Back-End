@@ -1,16 +1,26 @@
 import jwt from "jsonwebtoken";
 
 // Contoh: blacklist di-memory (untuk production, lebih baik pakai Redis/DB)
-const tokenBlacklist = new Set();
+export const tokenBlacklist =
+  global.tokenBlacklist || (global.tokenBlacklist = new Set());
 
-export const addToBlacklist = (token) => {
+// Fungsi untuk menambah token ke blacklist
+export function addToBlacklist(token) {
   tokenBlacklist.add(token);
-};
+}
+
+// Fungsi untuk cek apakah token sudah di-blacklist
+export function isTokenBlacklisted(token) {
+  return tokenBlacklist.has(token);
+}
 
 const authenticate = async (request, h) => {
   try {
     // Ambil token dari cookie
-    const token = request.state.token;
+    let token = request.state.token;
+    if (Array.isArray(token)) {
+      token = token[0]; // Ambil token pertama jika array
+    }
 
     console.log("Token from cookie:", token); // Debug log
     console.log("All cookies:", request.state); // Debug log

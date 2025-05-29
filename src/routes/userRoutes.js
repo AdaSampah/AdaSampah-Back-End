@@ -20,9 +20,9 @@ const userRoutes = [
   {
     method: "POST",
     path: "/user/logout",
-    options: {
-      pre: [{ method: authenticate }],
-    },
+    // options: {
+    //   pre: [{ method: authenticate }],
+    // },
     handler: logoutUser,
   },
   {
