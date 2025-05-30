@@ -14,7 +14,7 @@ const updateUser = async (request, h) => {
 
     // Jika ada foto baru, upload ke Cloudinary
     let newProfileUrl = profileUrl;
-    if (request.payload.photo) {
+    if (request.payload.profileUrl) {
       const photo = request.payload.photo;
       newProfileUrl = await new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream({ folder: "profiles" }, (error, result) => {

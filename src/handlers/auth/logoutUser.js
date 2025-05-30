@@ -4,7 +4,7 @@ const logoutUser = async (request, h) => {
   try {
     const token = request.state.token;
 
-    console.log("Logout token:", token); // Debug log
+    // console.log("Logout token:", token);
 
     if (!token) {
       return h

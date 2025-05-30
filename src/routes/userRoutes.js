@@ -41,6 +41,15 @@ const userRoutes = [
     path: "/user/{id}",
     options: {
       pre: [{ method: authenticate }],
+      plugins: {
+        "hapi-auth-cookie": false,
+      },
+      payload: {
+        output: "stream",
+        parse: true,
+        multipart: true,
+        allow: "multipart/form-data",
+      },
     },
     handler: updateUser,
   },
