@@ -7,6 +7,7 @@ import deleteReportById from "../handlers/reports/deleteReportById.js";
 import toggleSaveById from "../handlers/reports/toggleSaveById.js";
 import getSaveById from "../handlers/reports/getSaveById.js";
 import getReportByUserId from "../handlers/reports/getReportByUserId.js";
+import authenticate from "../middleware/auth.js";
 
 const reportRoutes = [
   {
@@ -46,21 +47,45 @@ const reportRoutes = [
   {
     method: "PUT",
     path: "/reports/{reportId}",
+    options: {
+      pre: [{ method: authenticate }],
+      plugins: {
+        "hapi-auth-cookie": false,
+      },
+    },
     handler: editReportDescription,
   },
   {
     method: "PUT",
     path: "/reports/{reportId}/status",
+    options: {
+      pre: [{ method: authenticate }],
+      plugins: {
+        "hapi-auth-cookie": false,
+      },
+    },
     handler: updateReportStatus,
   },
   {
     method: "DELETE",
     path: "/reports/{reportId}",
+    options: {
+      pre: [{ method: authenticate }],
+      plugins: {
+        "hapi-auth-cookie": false,
+      },
+    },
     handler: deleteReportById,
   },
   {
     method: "PATCH",
     path: "/reports/{reportId}/saved/{userId}",
+    options: {
+      pre: [{ method: authenticate }],
+      plugins: {
+        "hapi-auth-cookie": false,
+      },
+    },
     handler: toggleSaveById,
   },
   {
@@ -70,7 +95,13 @@ const reportRoutes = [
   },
   {
     method: "GET",
-    path: "/reports/{userId}",
+    path: "/reports/user/{userId}",
+    options: {
+      pre: [{ method: authenticate }],
+      plugins: {
+        "hapi-auth-cookie": false,
+      },
+    },
     handler: getReportByUserId,
   },
 ];
