@@ -36,9 +36,19 @@ const updateReportStatus = async (request, h) => {
       time: time,
     }));
 
+    // Cek status selesai apa belum
+    const isCompleted = statusWithTime.some(
+      (s) => s.statusName?.toLowerCase() === "selesai"
+    );
+
+    let updateQuery = { $push: { status: { $each: statusWithTime } } };
+    if (isCompleted) {
+      updateQuery.$unset = { lat: "", lon: "" };
+    }
+
     const updatedReport = await Report.findByIdAndUpdate(
       reportId,
-      { $push: { status: { $each: statusWithTime } } },
+      updateQuery,
       { new: true }
     );
 

@@ -56,14 +56,14 @@ const reportRoutes = [
     handler: editReportDescription,
   },
   {
-    method: "PUT",
+    method: "PATCH",
     path: "/reports/{reportId}/status",
-    options: {
-      pre: [{ method: authenticate }],
-      plugins: {
-        "hapi-auth-cookie": false,
-      },
-    },
+    // options: {
+    //   pre: [{ method: authenticate }],
+    //   plugins: {
+    //     "hapi-auth-cookie": false,
+    //   },
+    // },
     handler: updateReportStatus,
   },
   {
