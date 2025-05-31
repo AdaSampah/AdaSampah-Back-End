@@ -4,6 +4,7 @@ import logoutUser from "../handlers/auth/logoutUser.js";
 import getUser from "../handlers/auth/getUser.js";
 import updateUser from "../handlers/auth/updateUser.js";
 import deleteUser from "../handlers/auth/deleteUser.js";
+import refetchUser from "../handlers/auth/refetchUser.js";
 import authenticate from "../middleware/auth.js";
 
 const userRoutes = [
@@ -41,6 +42,12 @@ const userRoutes = [
     path: "/user/{id}",
     options: {
       pre: [{ method: authenticate }],
+      payload: {
+        output: "stream",
+        parse: true,
+        multipart: true,
+        allow: "multipart/form-data",
+      },
     },
     handler: updateUser,
   },
@@ -51,6 +58,17 @@ const userRoutes = [
       pre: [{ method: authenticate }],
     },
     handler: deleteUser,
+  },
+  {
+    method: "GET",
+    path: "/user/refetch",
+    options: {
+      pre: [{ method: authenticate }],
+      plugins: {
+        "hapi-auth-cookie": false,
+      },
+    },
+    handler: refetchUser,
   },
 ];
 

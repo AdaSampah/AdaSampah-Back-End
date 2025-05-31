@@ -57,13 +57,14 @@ const loginUser = async (request, h) => {
         email: user.email,
         fullName: user.fullName,
         role: user.role,
+        profileUrl: user.profileUrl,
       },
     });
 
     response.state("token", token, {
       path: "/",
       isHttpOnly: true,
-      isSecure: process.env.NODE_ENV === "production", // true hanya di production
+      isSecure: process.env.NODE_ENV === "production" ? true : false, // <-- ubah baris ini
       sameSite: "Strict",
       ttl: 3 * 24 * 60 * 60 * 1000, // 3 hari (ms)
     });

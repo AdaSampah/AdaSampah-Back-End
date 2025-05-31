@@ -5,6 +5,7 @@ const statusSchema = new Schema(
   {
     statusName: { type: String, required: true },
     statusDescription: { type: String, required: true },
+    time: { type: String },
   },
   { _id: false }
 );

@@ -1,5 +1,22 @@
 import Report from "../../models/reportSchema.js";
 
+function formatDate(date) {
+  return (
+    date
+      .toLocaleString("id-ID", {
+        weekday: "long",
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+        timeZone: "Asia/Jakarta",
+      })
+      .replace(",", ",") + " WIB"
+  );
+}
+
 const updateReportStatus = async (request, h) => {
   try {
     const { reportId } = request.params;
@@ -12,9 +29,16 @@ const updateReportStatus = async (request, h) => {
         .code(400);
     }
 
+    // Ketergan waktu untuk setiap status
+    const time = formatDate(new Date());
+    const statusWithTime = status.map((s) => ({
+      ...s,
+      time: time,
+    }));
+
     const updatedReport = await Report.findByIdAndUpdate(
       reportId,
-      { $push: { status: { $each: status } } },
+      { $push: { status: { $each: statusWithTime } } },
       { new: true }
     );
 
