@@ -23,6 +23,8 @@ const reportSchema = new Schema(
     status: { type: [statusSchema], default: [] },
     saved: { type: [String], default: [] },
     province: { type: String, required: true },
+    location: { type: String, required: true },
+    detailLocation: { type: String, required: true },
   },
   { timestamps: true }
 );

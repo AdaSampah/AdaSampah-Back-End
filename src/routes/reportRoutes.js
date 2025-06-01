@@ -39,6 +39,7 @@ const reportRoutes = [
         output: "stream",
         parse: true,
         multipart: true,
+        maxBytes: 5 * 1024 * 1024,
         allow: "multipart/form-data",
       },
     },

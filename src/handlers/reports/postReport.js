@@ -16,6 +16,8 @@ const postReport = async (request, h) => {
       status,
       saved,
       province,
+      location,
+      detailLocation,
     } = request.payload;
 
     // ambil file gambar dari request payload
@@ -51,6 +53,8 @@ const postReport = async (request, h) => {
       lonDetail: Number(lonDetail),
       regency,
       province,
+      location,
+      detailLocation,
       status: status ? JSON.parse(status) : [],
       saved: saved ? JSON.parse(saved) : [],
     });
