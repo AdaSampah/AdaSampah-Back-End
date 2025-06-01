@@ -29,12 +29,6 @@ const userRoutes = [
   {
     method: "GET",
     path: "/user/{id}",
-    options: {
-      pre: [{ method: authenticate }],
-      plugins: {
-        "hapi-auth-cookie": false,
-      },
-    },
     handler: getUser,
   },
   {
