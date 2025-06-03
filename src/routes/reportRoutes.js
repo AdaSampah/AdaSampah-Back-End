@@ -59,6 +59,13 @@ const reportRoutes = [
   {
     method: "PATCH",
     path: "/reports/{reportId}/status",
+    options: {
+      // Tambahkan payload config
+      payload: {
+        parse: true,
+        allow: "application/json",
+      },
+    },
     // options: {
     //   pre: [{ method: authenticate }],
     //   plugins: {

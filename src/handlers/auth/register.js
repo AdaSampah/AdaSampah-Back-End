@@ -4,7 +4,7 @@ import nanoId from "nano-id";
 
 const registerUser = async (request, h) => {
   try {
-    const { username, email, password, fullName } = request.payload;
+    const { username, email, password, fullName, role } = request.payload;
 
     // Cek apakah pengguna sudah ada
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
@@ -25,6 +25,7 @@ const registerUser = async (request, h) => {
       email,
       password: hashedPassword,
       fullName,
+      role,
     });
 
     // Simpan ke database
@@ -39,6 +40,7 @@ const registerUser = async (request, h) => {
           username: result.username,
           email: result.email,
           fullName: result.fullName,
+          role: result.role,
         },
       })
       .code(201);

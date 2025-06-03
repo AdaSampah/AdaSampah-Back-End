@@ -20,48 +20,69 @@ function formatDate(date) {
 const updateReportStatus = async (request, h) => {
   try {
     const { reportId } = request.params;
-    const { status } = request.payload;
-
-    // Validasi status yang diterima
-    if (!status || !Array.isArray(status)) {
+    const { statusDescription } = request.payload;
+    if (!statusDescription || statusDescription.trim() === "") {
       return h
-        .response({ status: "fail", message: "Invalid status format" })
+        .response({
+          status: "fail",
+          message: "Description is required",
+        })
         .code(400);
     }
 
-    // Ketergan waktu untuk setiap status
+    const report = await Report.findById(reportId);
+    if (!report) {
+      return h
+        .response({
+          status: "fail",
+          message: "Report not found",
+        })
+        .code(404);
+    }
+
+    // Tentukan statusName berikutnya
+    const lastStatus = report.status[report.status.length - 1]?.statusName?.toLowerCase();
+    let nextStatus = "";
+    if (!lastStatus) {
+      nextStatus = "Diverifikasi";
+    } else if (lastStatus === "diverifikasi") {
+      nextStatus = "Diproses";
+    } else if (lastStatus === "diproses") {
+      nextStatus = "Selesai";
+    } else if (lastStatus === "selesai") {
+      return h
+        .response({
+          status: "fail",
+          message: "Report already completed",
+        })
+        .code(400);
+    }
+
     const time = formatDate(new Date());
-    const statusWithTime = status.map((s) => ({
-      ...s,
+
+    // Buat data status baru
+    const newStatus = {
+      statusName: nextStatus,
+      statusDescription: statusDescription,
       time: time,
-    }));
+    };
 
-    // Cek status selesai apa belum
-    const isCompleted = statusWithTime.some(
-      (s) => s.statusName?.toLowerCase() === "selesai"
-    );
+    // Push ke status[]
+    const updateQuery = {
+      $push: { status: newStatus },
+    };
 
-    let updateQuery = { $push: { status: { $each: statusWithTime } } };
-    if (isCompleted) {
+    // Jika selesai, hapus lat/lon
+    if (nextStatus === "Selesai") {
       updateQuery.$unset = { lat: "", lon: "" };
     }
 
-    const updatedReport = await Report.findByIdAndUpdate(
-      reportId,
-      updateQuery,
-      { new: true }
-    );
-
-    if (!updatedReport) {
-      return h
-        .response({ status: "fail", message: "Report not found" })
-        .code(404);
-    }
+    const updatedReport = await Report.findByIdAndUpdate(reportId, updateQuery, { new: true });
 
     return h
       .response({
         status: "success",
-        message: "Report status updated successfully",
+        message: `Status ${nextStatus} berhasil ditambahkan`,
         data: updatedReport,
       })
       .code(200);

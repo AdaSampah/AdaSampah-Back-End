@@ -5,15 +5,6 @@ const getReportByUserId = async (request, h) => {
     const { userId } = request.params;
     const getReports = await Report.find({ userId });
 
-    if (getReports.length === 0) {
-      return h
-        .response({
-          status: "fail",
-          message: "No reports found for this user",
-        })
-        .code(404);
-    }
-
     return h
       .response({
         status: "success",
