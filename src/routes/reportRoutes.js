@@ -8,6 +8,7 @@ import toggleSaveById from "../handlers/reports/toggleSaveById.js";
 import getSaveById from "../handlers/reports/getSaveById.js";
 import getReportByUserId from "../handlers/reports/getReportByUserId.js";
 import authenticate from "../middleware/auth.js";
+import getAllReportsPaginate from "../handlers/reports/getAllReportsPaginate.js";
 
 const reportRoutes = [
   {
@@ -21,6 +22,11 @@ const reportRoutes = [
     method: "GET",
     path: "/reports",
     handler: getAllReports,
+  },
+  {
+    method: "GET",
+    path: "/reports/limit",
+    handler: getAllReportsPaginate,
   },
   {
     method: "GET",
