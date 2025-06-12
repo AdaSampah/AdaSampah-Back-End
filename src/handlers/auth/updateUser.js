@@ -4,47 +4,41 @@ import cloudinary from "../../config/cloudinary.js";
 const updateUser = async (request, h) => {
   try {
     const { id } = request.params;
-    const { username, email, fullName, profileUrl } = request.payload;
+    const { username, email, fullName } = request.payload;
+    let profileUrl = request.payload.profileUrl;
 
-    // Ambil pengguna berdasarkan ID
     const user = await User.findById(id);
     if (!user) {
       return h.response({ status: "fail", message: "User not found" }).code(404);
     }
 
-    // Jika ada foto baru, upload ke Cloudinary
-    let newProfileUrl = profileUrl;
-    if (request.payload.photo) {
-      const photo = request.payload.photo;
-      newProfileUrl = await new Promise((resolve, reject) => {
+    // Kalau profileUrl adalah file upload (stream)
+    if (profileUrl && profileUrl._data) {
+      // upload ke cloudinary
+      profileUrl = await new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream({ folder: "profiles" }, (error, result) => {
           if (error) reject(error);
           else resolve(result.secure_url);
         });
-        photo.pipe(stream);
+        profileUrl.pipe(stream);
       });
+    } else if (!profileUrl) {
+      profileUrl = user.profileUrl; // tetap pakai URL lama kalau tidak dikirim
     }
 
-    // Update data pengguna
+    // update user
     user.username = username || user.username;
     user.email = email || user.email;
     user.fullName = fullName || user.fullName;
-    user.profileUrl = newProfileUrl || user.profileUrl;
+    user.profileUrl = profileUrl || user.profileUrl;
 
-    // Simpan perubahan
     const updatedUser = await user.save();
 
     return h
       .response({
         status: "success",
         message: "User updated successfully",
-        data: {
-          userId: updatedUser._id,
-          username: updatedUser.username,
-          email: updatedUser.email,
-          fullName: updatedUser.fullName,
-          profileUrl: updatedUser.profileUrl,
-        },
+        data: updatedUser,
       })
       .code(200);
   } catch (error) {
