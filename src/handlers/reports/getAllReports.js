@@ -6,9 +6,7 @@ const getAllReports = async (request, h) => {
     return h.response({ status: "success", data: reports }).code(200);
   } catch (error) {
     console.error("Error fetching reports:", error);
-    return h
-      .response({ status: "fail", message: "Failed to fetch reports" })
-      .code(500);
+    return h.response({ status: "fail", message: "Failed to fetch reports" }).code(500);
   }
 };
 
